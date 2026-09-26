@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Курсы</title>
+</head>
+<body>
+
+<h1>Список курсов</h1>
+
+<ul>
+    {% for course in courses %}
+        <li>
+            {{ course.title }}
+            —
+            {{ course.department.name }}
+        </li>
+    {% empty %}
+        <li>Курсов пока нет.</li>
+    {% endfor %}
+</ul>
+
+<a href="/profile/">
+    Профиль
+</a>
+
+</body>
+</html>
