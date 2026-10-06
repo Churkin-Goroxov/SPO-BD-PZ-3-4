@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h1>Вход в систему</h1>
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+
+<div class="login-container shadow-sm">
+
+    <h2 class="mb-4 text-center">Вход в систему</h2>
+
     <form method="post">
         {% csrf_token %}
+
         {{ form.as_p }}
 
-        <button type="submit">
+        <button type="submit" class="btn btn-primary w-100">
             Войти
         </button>
     </form>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

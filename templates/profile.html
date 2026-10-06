@@ -1,26 +1,36 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Профиль</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
+{% block title %}Профиль{% endblock %}
 
-    <h1>Профиль</h1>
+{% block content %}
+
+<div class="user-info shadow-sm">
+
+    <h1 class="mb-4">Профиль пользователя</h1>
 
     <p>
-        Пользователь:
+        <strong>Имя пользователя:</strong>
         {{ user.username }}
     </p>
 
-    <form method="post" action="/accounts/logout/">
-        {% csrf_token %}
+    <p>
+        <strong>Статус:</strong>
 
-        <button type="submit">
-            Выйти
-        </button>
+        {% if user.is_superuser %}
+            <span class="badge bg-danger">
+                Администратор
+            </span>
+        {% else %}
+            <span class="badge bg-primary">
+                Пользователь
+            </span>
+        {% endif %}
+    </p>
 
-    </form>
-</body>
-</html>
+    <a href="{% url 'course_list' %}" class="btn btn-primary">
+        Посмотреть курсы
+    </a>
+
+</div>
+
+{% endblock %}
