@@ -3,62 +3,144 @@
 {% block title %}Учебные группы{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>Учебные группы</h1>
+<div class="container-fluid page-container">
 
-    {% if is_methodist %}
-        <p>
-            <a href="{% url 'academic_group_create' %}" class="btn btn-primary">
+    <div class="page-head">
+        <div>
+            <div class="eyebrow">
+                УЧЕБНАЯ СИСТЕМА / СТУДЕНТЫ
+            </div>
+
+            <h1>
+                Учебные группы<span>.</span>
+            </h1>
+
+            <p>
+                Структура учебных групп по факультетам
+            </p>
+        </div>
+
+        {% if is_methodist %}
+            <a
+                href="{% url 'academic_group_create' %}"
+                class="btn btn-primary"
+            >
+                <span class="add-symbol">+</span>
                 Добавить группу
             </a>
-        </p>
-    {% endif %}
+        {% endif %}
+    </div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Название</th>
-                <th>Факультет</th>
-                {% if is_methodist %}
-                    <th>Действия</th>
-                {% endif %}
-            </tr>
-        </thead>
+    <div class="data-card">
 
-        <tbody>
-            {% for academic_group in academic_groups %}
-                <tr>
-                    <td>{{ academic_group.id }}</td>
-                    <td>{{ academic_group.name }}</td>
-                    <td>{{ academic_group.department }}</td>
+        <div class="card-head">
+            <div>
+                <span class="card-title">
+                    Список групп
+                </span>
 
-                    {% if is_methodist %}
-                        <td>
-                            <a
-                                href="{% url 'academic_group_update' academic_group.pk %}"
-                                class="btn btn-sm btn-warning"
+                <span class="card-subtitle">
+                    Учебные подразделения
+                </span>
+            </div>
+
+            <span class="tag">
+                ГРУППЫ
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table courses-table mb-0">
+
+                <thead>
+                    <tr>
+                        <th class="item-id">№</th>
+                        <th>Название группы</th>
+                        <th>Факультет</th>
+
+                        {% if is_methodist %}
+                            <th class="actions">Действия</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for academic_group in academic_groups %}
+                        <tr>
+
+                            <td class="item-id">
+                                <span class="item-number">
+                                    {{ academic_group.id }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="item-name">
+                                    {{ academic_group.name }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="item-dept">
+                                    {{ academic_group.department }}
+                                </span>
+                            </td>
+
+                            {% if is_methodist %}
+                                <td class="actions">
+                                    <div class="action-buttons">
+
+                                        <a
+                                            href="{% url 'academic_group_update' academic_group.pk %}"
+                                            class="btn btn-outline-secondary btn-sm"
+                                        >
+                                            Изменить
+                                        </a>
+
+                                        <a
+                                            href="{% url 'academic_group_delete' academic_group.pk %}"
+                                            class="btn btn-outline-danger btn-sm"
+                                        >
+                                            Удалить
+                                        </a>
+
+                                    </div>
+                                </td>
+                            {% endif %}
+
+                        </tr>
+
+                    {% empty %}
+                        <tr>
+                            <td
+                                colspan="{% if is_methodist %}4{% else %}3{% endif %}"
+                                class="empty-state"
                             >
-                                Изменить
-                            </a>
+                                <span class="empty-mark">+</span>
 
-                            <a
-                                href="{% url 'academic_group_delete' academic_group.pk %}"
-                                class="btn btn-sm btn-danger"
-                            >
-                                Удалить
-                            </a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="{% if is_methodist %}4{% else %}3{% endif %}">
-                        Учебных групп пока нет.
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                                <strong>
+                                    Учебных групп пока нет
+                                </strong>
+
+                                <span>
+                                    Созданные группы появятся в этом списке.
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="card-foot">
+            <span>УЧЕБНЫЙ КАТАЛОГ</span>
+
+            <span>
+                ЗНАНИЯ — ЭТО СИЛА<span class="footer-dot">.</span>
+            </span>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

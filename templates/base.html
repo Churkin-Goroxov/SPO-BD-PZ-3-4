@@ -1,96 +1,121 @@
-{% load static %} 
- 
-<!DOCTYPE html> 
-<html lang="ru"> 
- 
-<head> 
-    <meta charset="UTF-8"> 
- 
-    <meta name="viewport" 
-          content="width=device-width, initial-scale=1"> 
- 
-    <title> 
-        {% block title %} 
-            Учебное приложение 
-        {% endblock %} 
-    </title> 
- 
-    <link rel="stylesheet" 
-          href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}"> 
- 
-    <link rel="stylesheet" 
-          href="{% static 'css/style.css' %}"> 
-</head> 
- 
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Учебная система{% endblock %}</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'vendor/tabler/css/tabler.min.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+</head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark"> 
- 
-    <div class="container"> 
- 
-        <a class="navbar-brand" 
-           href="/profile/"> 
-            DjangoApp 
-        </a> 
- 
-        <div class="navbar-nav me-auto"> 
- 
-            <a class="nav-link" 
-               href="/profile/"> 
-                Профиль 
-            </a> 
- 
-            <a class="nav-link" 
-               href="/departments/">
+<header class="header">
+    <div class="header-inner">
+
+        <a class="brand text-decoration-none"
+           href="{% url 'course_list' %}">
+            Учебная система<span>.</span>
+        </a>
+
+        <div class="header-controls">
+
+            {% if request.user.is_authenticated %}
+                <span class="username">
+                    {{ request.user.username }}
+                </span>
+            {% endif %}
+
+            <button
+                class="menu-toggle"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#siteMenu"
+                aria-controls="siteMenu"
+                aria-expanded="false"
+                aria-label="Открыть меню"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </div>
+
+        <nav class="collapse menu" id="siteMenu">
+
+            <div class="menu-title">
+                НАВИГАЦИЯ
+            </div>
+
+            <a
+                class="menu-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+                href="{% url 'profile' %}"
+            >
+                <span>01</span>
+                Профиль
+            </a>
+
+            <a
+                class="menu-link {% if 'department' in request.resolver_match.url_name %}active{% endif %}"
+                href="{% url 'department_list' %}"
+            >
+                <span>02</span>
                 Факультеты
             </a>
 
-            <a class="nav-link" 
-               href="/groups/">
+            <a
+                class="menu-link {% if 'group' in request.resolver_match.url_name %}active{% endif %}"
+                href="{% url 'academic_group_list' %}"
+            >
+                <span>03</span>
                 Учебные группы
             </a>
 
-            <a class="nav-link" 
-               href="/courses/">
+            <a
+                class="menu-link {% if 'course' in request.resolver_match.url_name %}active{% endif %}"
+                href="{% url 'course_list' %}"
+            >
+                <span>04</span>
                 Курсы
             </a>
 
-        </div> 
- 
-        {% if user.is_authenticated %} 
- 
-            <span class="navbar-text me-3"> 
-                {{ user.username }} 
-            </span> 
- 
-            <form method="post" 
-                  action="/accounts/logout/"> 
- 
-                {% csrf_token %} 
- 
-                <button class="btn btn-outline-light btnsm" 
-                        type="submit"> 
-                    Выйти 
-                </button> 
- 
-            </form> 
- 
-        {% endif %} 
- 
-    </div> 
- 
-</nav> 
- 
-<div class="container page-container"> 
- 
-    {% block content %} 
- 
-    {% endblock %} 
- 
-</div> 
- 
-<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"> 
-</script> 
- 
-</body> 
+            {% if request.user.is_authenticated %}
+                <div class="menu-footer">
+
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+
+                        <button type="submit" class="logout">
+                            Выйти из аккаунта
+                            <span>↗</span>
+                        </button>
+                    </form>
+
+                </div>
+            {% endif %}
+
+        </nav>
+
+    </div>
+</header>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<script src="{% static 'vendor/tabler/js/tabler.min.js' %}"></script>
+
+</body>
 </html>

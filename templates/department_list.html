@@ -1,80 +1,101 @@
-{% extends 'base.html' %} 
- 
-{% block title %} 
-Факультеты 
-{% endblock %} 
- 
-{% block content %} 
- 
-<div class="d-flex justify-content-between mb-3"> 
- 
-    <h1>Факультеты</h1> 
- 
-    {% if is_methodist %} 
-    
-        <a class="btn btn-primary" 
-           href="/departments/add/"> 
-            Добавить факультет 
-        </a> 
- 
-    {% endif %} 
- 
-</div> 
- 
- 
-<table class="table table-striped"> 
- 
-    <thead> 
- 
-        <tr> 
-            <th>ID</th> 
-            <th>Название</th> 
- 
-            {% if is_methodist %} 
-                <th>Действия</th> 
-            {% endif %} 
- 
-        </tr> 
- 
-    </thead> 
- 
-    <tbody> 
- 
-        {% for department in departments %} 
- 
-        <tr> 
- 
-            <td> 
-                {{ department.id }} 
-            </td> 
- 
-            <td> 
-                {{ department.name }} 
-            </td> 
- 
-            {% if is_methodist %} 
- 
-            <td> 
- 
-                <a class="btn btn-sm btn-warning" 
-                   href="/departments/{{ department.id }}/edit/"> 
- 
-                    Изменить 
- 
-                </a> 
- 
-                <a class="btn btn-sm btn-danger" 
-                   href="/departments/{{ department.id }}/delete/"> 
- 
-                    Удалить 
- 
-                </a> 
- 
-            </td> 
- 
-            {% endif %} 
-</tr> 
-{% endfor %} 
-</tbody> 
-</table> 
+{% extends 'base.html' %}
+
+{% block title %}Факультеты{% endblock %}
+
+{% block content %}
+<div class="container-fluid page-container">
+
+    <div class="page-head">
+        <div>
+            <div class="eyebrow">УЧЕБНАЯ СИСТЕМА / СТРУКТУРА</div>
+            <h1>Факультеты<span>.</span></h1>
+            <p>Факультеты и направления обучения</p>
+        </div>
+
+        {% if is_methodist %}
+            <a href="/departments/add/" class="btn btn-primary">
+                <span class="add-symbol">+</span> Добавить факультет
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="data-card">
+        <div class="card-head">
+            <div>
+                <span class="card-title">Список факультетов</span>
+                <span class="card-subtitle">Структура учебного заведения</span>
+            </div>
+            <span class="tag">ФАКУЛЬТЕТЫ</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table courses-table mb-0">
+                <thead>
+                    <tr>
+                        <th class="item-id">№</th>
+                        <th>Название факультета</th>
+                        {% if is_methodist %}
+                            <th class="actions">Действия</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for department in departments %}
+                        <tr>
+                            <td class="item-id">
+                                <span class="item-number">
+                                    {{ department.id }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="item-name">
+                                    {{ department.name }}
+                                </div>
+                            </td>
+
+                            {% if is_methodist %}
+                                <td class="actions">
+                                    <div class="action-buttons">
+                                        <a
+                                            class="btn btn-outline-secondary btn-sm"
+                                            href="/departments/{{ department.id }}/edit/"
+                                        >
+                                            Изменить
+                                        </a>
+
+                                        <a
+                                            class="btn btn-outline-danger btn-sm"
+                                            href="/departments/{{ department.id }}/delete/"
+                                        >
+                                            Удалить
+                                        </a>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+
+                    {% empty %}
+                        <tr>
+                            <td
+                                colspan="{% if is_methodist %}3{% else %}2{% endif %}"
+                                class="empty-state"
+                            >
+                                <span class="empty-mark">+</span>
+                                <strong>Факультетов пока нет</strong>
+                                <span>Добавленные факультеты появятся здесь.</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-foot">
+            <span>УЧЕБНЫЙ КАТАЛОГ</span>
+            <span>ЗНАНИЯ — ЭТО СИЛА<span class="footer-dot">.</span></span>
+        </div>
+    </div>
+</div>
 {% endblock %}
