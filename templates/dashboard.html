@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Аналитика — Учебная система{% endblock %}
+
+{% block content %}
+<div class="container-fluid page-container">
+
+    <div class="page-head">
+        <div>
+            <div class="eyebrow">АНАЛИТИКА / ОБРАЗОВАНИЕ</div>
+            <h1>Дашборды</h1>
+            <p>Статистика учебной системы на основе данных базы</p>
+        </div>
+        <span class="tag">LIVE DATA</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-secondary">Факультеты</div>
+                    <div class="h1 mb-0">{{ departments_count }}</div>
+                    <div class="text-secondary small mt-2">
+                        Всего в системе
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-secondary">Курсы</div>
+                    <div class="h1 mb-0">{{ courses_count }}</div>
+                    <div class="text-secondary small mt-2">
+                        Всего в системе
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-secondary">Учебные группы</div>
+                    <div class="h1 mb-0">{{ groups_count }}</div>
+                    <div class="text-secondary small mt-2">
+                        Всего в системе
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-secondary">Студенты</div>
+                    <div class="h1 mb-0">{{ students_count }}</div>
+                    <div class="text-secondary small mt-2">
+                        Зарегистрированные профили
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-12 col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Курсы по факультетам</h3>
+                        <div class="text-secondary">
+                            Количество курсов в каждом факультете
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="coursesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Студенты по факультетам</h3>
+                        <div class="text-secondary">
+                            Распределение студентов по факультетам
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="studentsDepartmentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Студенты по учебным группам</h3>
+                        <div class="text-secondary">
+                            Количество студентов в каждой группе
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="position: relative; height: 360px;">
+                        <canvas id="studentsGroupChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-secondary small mt-4">
+        Данные графиков формируются автоматически на основе записей базы данных.
+    </div>
+
+</div>
+
+{{ chart_data|json_script:"dashboard-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const dataElement = document.getElementById('dashboard-data');
+
+    if (!dataElement || typeof Chart === 'undefined') {
+        return;
+    }
+
+    const data = JSON.parse(dataElement.textContent);
+
+    function createChart(elementId, chartData, type, label, horizontal = false) {
+        const canvas = document.getElementById(elementId);
+
+        if (!canvas) {
+            return;
+        }
+
+        new Chart(canvas, {
+            type: type,
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: label,
+                    data: chartData.values,
+                    backgroundColor: [
+                        'rgba(255, 193, 7, 0.75)',
+                        'rgba(13, 110, 253, 0.65)',
+                        'rgba(25, 135, 84, 0.65)',
+                        'rgba(220, 53, 69, 0.65)',
+                        'rgba(111, 66, 193, 0.65)',
+                        'rgba(13, 202, 240, 0.65)'
+                    ],
+                    borderColor: '#d6a300',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: horizontal ? 'y' : 'x',
+                plugins: {
+                    legend: {
+                        display: type === 'doughnut',
+                        position: 'bottom'
+                    }
+                },
+                scales: type === 'doughnut' ? {} : {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    createChart(
+        'coursesChart',
+        data.courses_by_department,
+        'bar',
+        'Количество курсов'
+    );
+
+    createChart(
+        'studentsDepartmentChart',
+        data.students_by_department,
+        'doughnut',
+        'Количество студентов'
+    );
+
+    createChart(
+        'studentsGroupChart',
+        data.students_by_group,
+        'bar',
+        'Количество студентов',
+        true
+    );
+});
+</script>
+{% endblock %}

@@ -18,4 +18,6 @@ urlpatterns = [
     path('groups/add/', views.academic_group_create, name='academic_group_create'),
     path('groups/<int:pk>/edit/', views.academic_group_update, name='academic_group_update'),
     path('groups/<int:pk>/delete/', views.academic_group_delete, name='academic_group_delete'),
+
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]

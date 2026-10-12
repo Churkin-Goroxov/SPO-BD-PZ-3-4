@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import AcademicGroup, Course, Department
+from .models import AcademicGroup, Course, Department, StudentProfile
 from .forms import AcademicGroupForm, CourseForm, DepartmentForm
 
 
@@ -300,3 +301,39 @@ def course_delete(request, pk):
             'title': 'Удаление курса',
         }
     )
+
+@login_required
+def dashboard(request):
+    departments = Department.objects.annotate(
+        courses_total=Count('courses', distinct=True),
+        students_total=Count('students', distinct=True),
+    ).order_by('name')
+
+    groups = AcademicGroup.objects.annotate(
+        students_total=Count('students', distinct=True),
+    ).select_related('department').order_by('name')
+
+    chart_data = {
+        'courses_by_department': {
+            'labels': [department.name for department in departments],
+            'values': [department.courses_total for department in departments],
+        },
+        'students_by_department': {
+            'labels': [department.name for department in departments],
+            'values': [department.students_total for department in departments],
+        },
+        'students_by_group': {
+            'labels': [group.name for group in groups],
+            'values': [group.students_total for group in groups],
+        },
+    }
+
+    context = {
+        'departments_count': Department.objects.count(),
+        'courses_count': Course.objects.count(),
+        'groups_count': AcademicGroup.objects.count(),
+        'students_count': StudentProfile.objects.count(),
+        'chart_data': chart_data,
+    }
+
+    return render(request, 'dashboard.html', context)

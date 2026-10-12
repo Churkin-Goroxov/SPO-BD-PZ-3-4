@@ -90,6 +90,14 @@
                 Курсы
             </a>
 
+            <a
+                class="menu-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                href="{% url 'dashboard' %}"
+            >
+                <span>05</span>
+                Дашборды
+            </a>
+
             {% if request.user.is_authenticated %}
                 <div class="menu-footer">
 
